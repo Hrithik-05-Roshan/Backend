@@ -7,7 +7,7 @@ app.use(morgan('dev'))
 
 app.use(express.json())                         // built-in middleware
 app.use(express.urlencoded({extended: true}))   // built-in middleware
-
+app.use(express.static(("public")))
 
 app.set("view engine", 'ejs')
 
