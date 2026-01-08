@@ -117,5 +117,15 @@ and it is more secure than GET method as the data is not visible in the URL.
 
 req.body will contain the form data as an object, instead of req.query.(for POST method)
 
-we also need to use method='POST' in form tag in frontend, so thart the data is sent using POST method.
+we also need to use method='POST' in form tag in frontend, so that the data is sent using POST method.
 
+now to handle static files like CSS, JS, images etc we use built-in middleware express.static()
+app.use(express.static("public")) // this will serve static files from 'public' directory
+
+// now we can create a directory named 'public' in our project root and put all static files there.
+// for example, we can have public/index.css and public/script.js
+
+# MONGODB & MONGOOSE >>>>>
+MongoDB is a NoSQL database that stores data in JSON-like documents.
+Mongoose is an ODM (Object Data Modeling) library for MongoDB and Node.js, it provides a schema-based solution to model application data.
+to use mongoose we need to install it first using npm. npm install mongoose
