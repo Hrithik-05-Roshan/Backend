@@ -1,0 +1,121 @@
+in node.js we need to define http server to handle requests and responses. 
+for that we use 2 things requests(req) and responses(res).
+requests are made by clients to the server and responses are sent back by the server to the clients.
+
+we use createServer method from http module to create a server.
+const http = require('http'); // importing http module
+
+to apply route we use req.url to check the url of the request and res.end() to send response back to client. (in http module)
+
+req.url == '/' -> res.end('Home Page')  // this is how we define a route for home page
+req.url == '/about' -> res.end('About Page') // this is how we define a route for about page etc
+
+server.listen(3000) // server listens on port 3000, we can access it on localhost:3000
+there are lot of port numbers available to use, we can use any port number above 1024.
+
+
+
+
+EXPRESS.JS >>>>
+
+
+it is a web application framework for node.js, it simplifies the process of building web applications and APIs.
+to use express we need to install it first using npm.
+npm install express
+after installing we can import it in our file.
+const express = require('express'); // importing express module
+const app = express(); // creating an instance of express
+
+then we can use app.method_name to define routes.
+app.get('/', (req, res) => {
+    res.send('Home Page'); // sending response back to client
+}); etc.
+
+app.listen(3000); // server listens on port 3000
+
+
+app.set('view engine', 'ejs'); // setting ejs as the view engine for rendering dynamic content in html pages
+
+
+
+
+MIDDLEWARE IN EXPRESS.JS >>>>
+
+
+Three types of middlewares in Express.js:
+
+1. Built-in Middleware: These are the middleware functions that come with Express.js.
+2. Third-party Middleware: These are middleware functions created by the community and can be installed via npm.
+3. Custom Middleware: These are middleware functions that you create yourself to handle specific tasks in your application.
+
+// Example of Custom Middleware
+
+app.use((req, res, next) => {  // in this function next is a callback to pass control to the next middleware function
+    console.log('This is a custom middleware function');
+    next(); // pass control to the next route handler, without this the request will be left hanging!
+});
+
+//Example of Third-party Middleware (morgan):
+
+const morgan = require('morgan'); // importing morgan middleware
+app.use(morgan('dev')); // using morgan middleware for logging HTTP requests in 'dev'
+// 'dev' is a predefined format string for concise output colored by response status for development use.
+
+morgan will log the details of each request made to the server, such as method, URL, status code, response time etc.
+
+we can also define middleware for specific routes only.
+
+#PROCESS ---
+
+app.get('/', (req, res, next) => {  // here we define a middleware only for '/',  
+    const a = 5
+    const b = 20
+    console.log(a+b); // so this will log only when we go through '/'
+
+    next()
+},  (req,res)=>{
+    res.render('index')     // rendering the ejs file
+})
+
+// In this example, when a request is made to '/', the first middleware logs the sum of a and b, then calls next() to pass control to the next function which renders the 'index' ejs file.
+
+
+// Exaple of Built-in Middleware:
+
+app.use(express.json())                         // built-in middleware to parse JSON data in request body
+app.use(express.urlencoded({extended: true}))   // built-in middleware to parse URL-encoded
+
+
+// FORM CONTROLLS >>>
+
+
+so that we can extract data from frontend, and send it to backend or server for processing.
+we can use query parameters to get data from frontend forms.
+app.get('/get-form-data', (req,res)=>{
+    console.log(req.query) // req.query will contain the form data as an object
+    res.send('data received') // sending response back to client
+})
+
+here if we have a form in frontend with method GET and action '/get-form-data', when the form is submitted the data will be available in req.query object in backend.
+to show the data in console we use console.log(req.query), and in html form we can have input fields with name attributes to identify the data.
+
+#FOR EXAMPLE:
+
+<form method="GET" action="/get-form-data">
+    <input type="text" name="username" />
+    <input type="password" name="password" />
+    <button type="submit">Submit</button>
+</form>
+when this form is submitted, the data will be available in req.query as:
+{
+    username: 'value entered in username field',
+    password: 'value entered in password field'
+}
+
+// we can also use POST method to send form data to backend.
+and it is more secure than GET method as the data is not visible in the URL.
+
+req.body will contain the form data as an object, instead of req.query.(for POST method)
+
+we also need to use method='POST' in form tag in frontend, so thart the data is sent using POST method.
+
