@@ -3,9 +3,14 @@ for that we use 2 things requests(req) and responses(res).
 requests are made by clients to the server and responses are sent back by the server to the clients.
 
 we use createServer method from http module to create a server.
+
+http.createServer((req, res) => {
+    // handle requests and responses here
+});
+
 const http = require('http'); // importing http module
 
-to apply route we use req.url to check the url of the request and res.end() to send response back to client. (in http module)
+to apply route we use req.url to check the url of the request and res.end() to send response back to client. (in http module) 
 
 req.url == '/' -> res.end('Home Page')  // this is how we define a route for home page
 req.url == '/about' -> res.end('About Page') // this is how we define a route for about page etc
@@ -21,7 +26,7 @@ EXPRESS.JS >>>>
 
 it is a web application framework for node.js, it simplifies the process of building web applications and APIs.
 to use express we need to install it first using npm.
-npm install express
+npm install express 
 after installing we can import it in our file.
 const express = require('express'); // importing express module
 const app = express(); // creating an instance of express
@@ -82,8 +87,8 @@ app.get('/', (req, res, next) => {  // here we define a middleware only for '/',
 
 // Exaple of Built-in Middleware:
 
-app.use(express.json())                         // built-in middleware to parse JSON data in request body
-app.use(express.urlencoded({extended: true}))   // built-in middleware to parse URL-encoded
+app.use(express.json())                         // built-in middleware to parse JSON data in request body, it is used to handle JSON data sent from client to server. 
+app.use(express.urlencoded({extended: true}))   // built-in middleware to parse URL-encoded, form data in request body, it is used to handle form data sent from client to server.
 
 
 // FORM CONTROLLS >>>
@@ -129,3 +134,66 @@ app.use(express.static("public")) // this will serve static files from 'public' 
 MongoDB is a NoSQL database that stores data in JSON-like documents.
 Mongoose is an ODM (Object Data Modeling) library for MongoDB and Node.js, it provides a schema-based solution to model application data.
 to use mongoose we need to install it first using npm. npm install mongoose
+
+then we can import it in our file.
+const mongoose = require('mongoose'); // importing mongoose module
+
+then we can connect to MongoDB using mongoose.connect() method.
+
+then we can define a schema for our data using mongoose.Schema() method in user.js file in models directory.
+const userSchema = new mongoose.Schema({
+    name: String,
+    email: String,
+    password: String
+});
+
+models are used to create and read documents from the underlying MongoDB database.
+const User = mongoose.model('User', userSchema); // creating a model named 'User'
+
+then we can use this model to create, read, update and delete (CRUD) documents in the database.
+
+module.exports = User; // exporting the model
+
+then we can import this model in our main file and use it to perform CRUD operations.
+
+const User = require('./models/user'); // importing the User model in our main file, we can use this model to interact with the users collection in the database
+
+
+
+#DB.js >> to connect to MongoDB database
+
+
+we can use mongoose.connect() method to connect to the database.
+const mongoose = require('mongoose');  // importing mongoose module
+
+we can use connection string to connect to the database.
+
+mongoose.connect('mongodb://0.0.0.0/backend',) then(() => {  // replace 'backend' with your main directory name, 0.0.0.0 is the default MongoDB host, you can also use 'localhost', then we can use .then() method to handle successful connection
+
+    console.log('Connected to MongoDB'); //if connection is successful it will log this message
+}) // connection successful
+
+
+assigning the connection to a variable to handle errors
+const connection = mongoose.connection;
+
+and then exporting the connection, and we can import this connection in our main file to ensure that the database is connected before performing any operations.
+
+module.exports = connection;  // exporting the connection
+
+then we can import this connection in our main file.
+const connection = require('./config/db') // importing the connection in our main file
+
+now when we run our main file, it will connect to the database first before starting the server.
+but when we submit the form in frontend, the data will be sent to backend and we can use the User model to save the data in the database. but how??
+
+we can create a POST route to handle form submission and use the User model to save the data in the database.
+app.post('/register', async (req, res) => {  // async means asynchronous function, we use it to handle asynchronous operations like database operations, means that the code will not block the execution of other code while waiting for the database operation to complete.
+    const { name, email, password } = req.body; // extracting data in terms of key-value pairs(object) from request body
+
+    await const newUser = new User({ name : name, // await means that we are waiting for the promise to resolve before moving to the next line of code.
+                               email : email,
+                               password : password }); // creating a new user document using the User model
+
+    res.send(newUser); // newUser will contain the newly created user document, sending response back to client
+});   

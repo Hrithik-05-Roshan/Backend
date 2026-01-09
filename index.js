@@ -1,14 +1,14 @@
 const express = require('express');
 const app = express();
-const morgan = require('morgan')
-const connection = require('./config/db')
+const morgan = require('morgan') 
 const userModel = require('./models/user')
+const connection = require('./config/db') 
 
 app.use(morgan('dev'))
 
 app.use(express.json())                         // built-in middleware
 app.use(express.urlencoded({extended: true}))   // built-in middleware
-app.use(express.static(("public")))
+app.use(express.static(("public")))             // to handle static files like css, js
 
 app.set("view engine", 'ejs')
 
@@ -34,6 +34,25 @@ app.get('/about', (req,res)=>{
 app.get('/profile', (req,res)=>{
     res.send('Profile Page!')
 })
+
+
+app.get('/register', (req, res)=>{
+    res.render('register')
+})
+
+
+app.post('/register', async (req, res)=>{
+    const {username, email, password} = req.body
+
+    const newUser = await userModel.create({
+        username: username,
+        email: email,
+        password : password
+    })
+
+    res.send(newUser)
+})
+
 
 
 // app.get('/get-form-data', (req,res)=>{    // in get method, data will show in the frontend in url
